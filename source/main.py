@@ -59,11 +59,18 @@ df_test['VRDeck'].fillna(df_test['VRDeck'].mode()[0], inplace=True)
 # %%
 # Split cabin by '/'
 df["deck"]=df["Cabin"].str.split("/", expand=True)[0]
-df["num"]=df["Cabin"].str.split("/",expand=True)[1]
+df["num"]=df["Cabin"].str.split("/",expand=True)[1].astype("float")
 df["side"]=df["Cabin"].str.split("/",expand=True)[2]
 df_test["deck"]=df_test["Cabin"].str.split("/", expand=True)[0]
-df_test["num"]=df_test["Cabin"].str.split("/", expand=True)[1]
+df_test["num"]=df_test["Cabin"].str.split("/", expand=True)[1].astype("float")
 df_test["side"]=df_test["Cabin"].str.split("/", expand=True)[2]
 
 df.drop(['Cabin'], axis=1, inplace=True)
 df_test.drop(['Cabin'], axis=1, inplace=True)
+# %%
+df.info()
+# %%
+# Convert categorical data to numerical dataa
+# one-hot encoding
+df = pd.get_dummies(df, columns=['HomePlanet', 'CryoSleep', 'VIP', 'Destination', 'deck', 'side'], sparse=True)
+df_test = pd.get_dummies(df_test, columns=['HomePlanet', 'CryoSleep', 'VIP', 'Destination', 'deck', 'side'], sparse=True)
