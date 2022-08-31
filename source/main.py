@@ -2,6 +2,11 @@
 # inport packages
 import numpy as np
 import pandas as pd
+
+from sklearn.model_selection import cross_validate, StratifiedKFold
+from sklearn.ensemble import RandomForestClassifier
+
+import optuna
 # %%
 # import data
 df = pd.read_csv('../data/train.csv')
@@ -74,3 +79,36 @@ df.info()
 # one-hot encoding
 df = pd.get_dummies(df, columns=['HomePlanet', 'CryoSleep', 'VIP', 'Destination', 'deck', 'side'], sparse=True)
 df_test = pd.get_dummies(df_test, columns=['HomePlanet', 'CryoSleep', 'VIP', 'Destination', 'deck', 'side'], sparse=True)
+# %%
+X_train = df.drop("Transported", axis=1)
+y_train = df["Transported"]
+X_test  = df_test
+X_train.shape, y_train.shape, X_test.shape
+# %%
+# Rundom forest with optuna
+cv = 5
+
+def objective(trial):
+    
+    param_grid_rfc = {
+        "max_depth": trial.suggest_int("max_depth", 5, 15),
+        "min_samples_leaf": trial.suggest_int("min_samples_leaf", 1, 5),
+        'min_samples_split': trial.suggest_int("min_samples_split", 7, 15),
+        "criterion": trial.suggest_categorical("criterion", ["gini", "entropy"]),
+        'max_features': trial.suggest_int("max_features", 3, 10),
+        "random_state": 0
+    }
+
+    model = RandomForestClassifier(**param_grid_rfc)
+    
+    # Evaluate the model with 5-Fold CV / Accuracy
+    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    scores = cross_validate(model, X=X_train, y=y_train, cv=kf)
+    # Minimize, so subtract score from 1.0
+    return scores['test_score'].mean()
+
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=100)
+print(study.best_params)
+print(study.best_value)
+rfc_best_param = study.best_params
