@@ -38,6 +38,7 @@ jupyter_client==7.3.5
 jupyterlab-pygments==0.2.2
 jupyterlab-widgets==3.0.2
 kiwisolver==1.4.4
+lightgbm==3.3.2
 lxml==4.9.1
 Mako==1.2.2
 MarkupSafe==2.1.1

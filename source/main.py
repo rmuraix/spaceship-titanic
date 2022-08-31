@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
 import optuna
 # %%
@@ -139,3 +140,27 @@ study.optimize(objective, n_trials=100)
 print(study.best_params)
 print(study.best_value)
 xgb_best_param = study.best_params
+# %%
+# LightGBM with optuna
+def objective(trial):
+    
+    param_grid_lgb = {
+        'num_leaves': trial.suggest_int("num_leaves", 3, 10),
+        'learning_rate': trial.suggest_loguniform("learning_rate", 1e-8, 1.0),
+        'max_depth': trial.suggest_int("max_depth", 3, 10),
+        "random_state": 0
+    }
+
+    model = LGBMClassifier(**param_grid_lgb)
+    
+    # Evaluate the model with 5-Fold CV / Accuracy
+    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    scores = cross_validate(model, X=X_train, y=y_train, cv=kf)
+    # Minimize, so subtract score from 1.0
+    return scores['test_score'].mean()
+
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=100)
+print(study.best_params)
+print(study.best_value)
+lgb_best_param = study.best_params
