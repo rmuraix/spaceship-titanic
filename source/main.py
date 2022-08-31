@@ -5,6 +5,7 @@ import pandas as pd
 
 from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 
 import optuna
 # %%
@@ -112,3 +113,29 @@ study.optimize(objective, n_trials=100)
 print(study.best_params)
 print(study.best_value)
 rfc_best_param = study.best_params
+# %%
+# XGBoost with optuna
+def objective(trial):
+    
+    param_grid_xgb = {
+        'min_child_weight': trial.suggest_int("min_child_weight", 1, 5),
+        'gamma': trial.suggest_discrete_uniform("gamma", 0.1, 1.0, 0.1),
+        'subsample': trial.suggest_discrete_uniform("subsample", 0.5, 1.0, 0.1),
+        'colsample_bytree': trial.suggest_discrete_uniform("colsample_bytree", 0.5, 1.0, 0.1),
+        'max_depth': trial.suggest_int("max_depth", 3, 10),
+        "random_state": 0
+    }
+
+    model = XGBClassifier(**param_grid_xgb)
+    
+    # Evaluate the model with 5-Fold CV / Accuracy
+    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    scores = cross_validate(model, X=X_train, y=y_train, cv=kf)
+    # Minimize, so subtract score from 1.0
+    return scores['test_score'].mean()
+
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=100)
+print(study.best_params)
+print(study.best_value)
+xgb_best_param = study.best_params
