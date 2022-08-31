@@ -5,6 +5,8 @@ import pandas as pd
 
 from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 
@@ -164,3 +166,53 @@ study.optimize(objective, n_trials=100)
 print(study.best_params)
 print(study.best_value)
 lgb_best_param = study.best_params
+# %%
+# Logistic regression with optuna
+
+
+def objective(trial):
+    
+    param_grid_lr = {
+        'C' : trial.suggest_int("C", 1, 100),
+        "random_state": 0
+    }
+
+    model = LogisticRegression(**param_grid_lr)
+    
+    # Evaluate the model with 5-Fold CV / Accuracy
+    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    scores = cross_validate(model, X=X_train, y=y_train, cv=kf)
+    # Minimize, so subtract score from 1.0
+    return scores['test_score'].mean()
+
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=10)
+print(study.best_params)
+print(study.best_value)
+lr_best_param = study.best_params
+# %%
+# SVC with optuna
+
+
+def objective(trial):
+    
+    param_grid_svc = {
+        'C' : trial.suggest_int("C", 50, 200),
+        'gamma': trial.suggest_loguniform("gamma", 1e-4, 1.0),
+        "random_state": 0,
+        'kernel': 'rbf'
+    }
+
+    model = SVC(**param_grid_svc)
+    
+    # Evaluate the model with 5-Fold CV / Accuracy
+    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    scores = cross_validate(model, X=X_train, y=y_train, cv=kf)
+    # Minimize, so subtract score from 1.0
+    return scores['test_score'].mean()
+
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=10)
+print(study.best_params)
+print(study.best_value)
+svc_best_param = study.best_params
