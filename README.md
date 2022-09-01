@@ -7,7 +7,7 @@ My solution for [spaceship-titanic competition](https://www.kaggle.com/competiti
 ## Features
 - Using LightGBM
 ## Score
-![Kaggle Badge](https://img.shields.io/badge/Score:0.80604-20BEFF?style=for-the-badge&logo=Kaggle&logoColor=white)  
+![Kaggle Badge](https://img.shields.io/badge/Score:0.80804-20BEFF?style=for-the-badge&logo=Kaggle&logoColor=white)  
 
 ![score](https://user-images.githubusercontent.com/35632215/187970779-96661d09-1618-44af-838a-ac9e239a39ac.png)
 ## Download/Usage
