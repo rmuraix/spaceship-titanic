@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from sklearn.model_selection import cross_validate, StratifiedKFold
+from sklearn.model_selection import cross_validate, StratifiedKFold, train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
@@ -84,10 +84,47 @@ df.info()
 df = pd.get_dummies(df, columns=['HomePlanet', 'CryoSleep', 'VIP', 'Destination', 'deck', 'side'], sparse=True)
 df_test = pd.get_dummies(df_test, columns=['HomePlanet', 'CryoSleep', 'VIP', 'Destination', 'deck', 'side'], sparse=True)
 # %%
-X_train = df.drop("Transported", axis=1)
-y_train = df["Transported"]
-X_test  = df_test
-X_train.shape, y_train.shape, X_test.shape
+train_feature = df.drop("Transported", axis=1)
+test_feature = df_test
+train_tagert = df['Transported']
+# Split train data
+X_train, X_test, y_train, y_test = train_test_split(
+    train_feature, train_tagert, test_size=0.2, random_state=0, stratify=train_tagert)
+# %%
+rfc = RandomForestClassifier(random_state=0)
+rfc.fit(X_train, y_train)
+print('='*20)
+print('RandomForestClassifier')
+print(f'accuracy of train set: {rfc.score(X_train, y_train)}')
+print(f'accuracy of test set: {rfc.score(X_test, y_test)}')
+
+xgb = XGBClassifier(random_state=0)
+xgb.fit(X_train, y_train)
+print('='*20)
+print('XGBClassifier')
+print(f'accuracy of train set: {xgb.score(X_train, y_train)}')
+print(f'accuracy of train set: {xgb.score(X_test, y_test)}')
+
+lgb = LGBMClassifier(random_state=0)
+lgb.fit(X_train, y_train)
+print('='*20)
+print('LGBMClassifier')
+print(f'accuracy of train set: {lgb.score(X_train, y_train)}')
+print(f'accuracy of train set: {lgb.score(X_test, y_test)}')
+
+lr = LogisticRegression(random_state=0)
+lr.fit(X_train, y_train)
+print('='*20)
+print('LogisticRegression')
+print(f'accuracy of train set: {lr.score(X_train, y_train)}')
+print(f'accuracy of train set: {lr.score(X_test, y_test)}')
+
+svc = SVC(random_state=0)
+svc.fit(X_train, y_train)
+print('='*20)
+print('SVC')
+print(f'accuracy of train set: {svc.score(X_train, y_train)}')
+print(f'accuracy of train set: {svc.score(X_test, y_test)}')
 # %%
 # Rundom forest with optuna
 cv = 5
@@ -216,3 +253,96 @@ study.optimize(objective, n_trials=10)
 print(study.best_params)
 print(study.best_value)
 svc_best_param = study.best_params
+# %%
+# predict with best params
+# Evaluate the model with 5-Fold CV / Accuracy
+kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+
+rfc_best = RandomForestClassifier(**rfc_best_param)
+print('RandomForestClassifier')
+print('='*20)
+scores = cross_validate(rfc_best, X=train_feature, y=train_tagert, cv=kf)
+print(f'mean:{scores["test_score"].mean()}, std:{scores["test_score"].std()}')
+print('='*20)
+
+xgb_best = XGBClassifier(**xgb_best_param)
+print('XGBClassifier')
+print('='*20)
+scores = cross_validate(xgb_best, X=train_feature, y=train_tagert, cv=kf)
+print(f'mean:{scores["test_score"].mean()}, std:{scores["test_score"].std()}')
+print('='*20)
+
+lgb_best = LGBMClassifier(**lgb_best_param)
+print('LGBMClassifier')
+print('='*20)
+scores = cross_validate(lgb_best, X=train_feature, y=train_tagert, cv=kf)
+print(f'mean:{scores["test_score"].mean()}, std:{scores["test_score"].std()}')
+print('='*20)
+
+lr_best = LogisticRegression(**lr_best_param)
+print('LogisticRegression')
+print('='*20)
+scores = cross_validate(lr_best, X=train_feature, y=train_tagert, cv=kf)
+print(f'mean:{scores["test_score"].mean()}, std:{scores["test_score"].std()}')
+print('='*20)
+
+svc_best = SVC(**svc_best_param)
+print('SVC')
+print('='*20)
+scores = cross_validate(svc_best, X=train_feature, y=train_tagert, cv=kf)
+print(f'mean:{scores["test_score"].mean()}, std:{scores["test_score"].std()}')
+print('='*20)
+# %%
+from sklearn.ensemble import VotingClassifier
+
+# Prepare classifiers for voting
+estimators = [
+    ('rfc', RandomForestClassifier(**rfc_best_param)),
+    ('xgb', XGBClassifier(**xgb_best_param)),
+    ('lgb', LGBMClassifier(**lgb_best_param)),
+    ('lr', LogisticRegression(**lr_best_param)),
+    ('svc', SVC(**lr_best_param))
+]
+voting = VotingClassifier(estimators)
+
+print('VotingClassifier')
+print('='*20)
+scores = cross_validate(voting, X=train_feature, y=train_tagert, cv=kf)
+# %%
+# RandomForest
+rfc_best = RandomForestClassifier(**rfc_best_param)
+rfc_best.fit(train_feature, train_tagert)
+# XGBoost
+xgb_best = XGBClassifier(**xgb_best_param)
+xgb_best.fit(train_feature, train_tagert)
+# LightGBM
+lgb_best = LGBMClassifier(**lgb_best_param)
+lgb_best.fit(train_feature, train_tagert)
+# LogisticRegression
+lr_best = LogisticRegression(**lr_best_param)
+lr_best.fit(train_feature, train_tagert)
+# SVC
+svc_best = SVC(**svc_best_param)
+svc_best.fit(train_feature, train_tagert)
+# prediction
+pred = {
+    'rfc': rfc_best.predict(test_feature),
+    'xgb': xgb_best.predict(test_feature),
+    'lgb': lgb_best.predict(test_feature),
+    'lr': lr_best.predict(test_feature),
+    'svc': svc_best.predict(test_feature)
+}
+
+
+# %%
+# submission
+sample = pd.read_csv('../data/sample_submission.csv')
+for key, value in pred.items():
+    pd.concat(
+        [
+            pd.DataFrame(sample.PassengerId, columns=['PassengerId']).reset_index(drop=True),
+            pd.DataFrame(value, columns=['Transported'])
+        ],
+        axis=1
+    ).to_csv(f'../submissions/output_{key}.csv', index=False)
+# %%
