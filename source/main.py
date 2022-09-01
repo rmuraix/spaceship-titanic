@@ -1,6 +1,5 @@
 # %%
 # inport packages
-import numpy as np
 import pandas as pd
 
 from sklearn.model_selection import cross_validate, StratifiedKFold, train_test_split
