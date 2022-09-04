@@ -62,7 +62,7 @@ Pillow==9.2.0
 prettytable==3.4.1
 prometheus-client==0.14.1
 prompt-toolkit==3.0.31
-psutil==5.9.1
+psutil==5.9.2
 pure-eval==0.2.2
 pycparser==2.21
 Pygments==2.13.0
