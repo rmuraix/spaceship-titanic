@@ -26,5 +26,5 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run file
         run: |
-          cd ./source
+          cd ${{github.workspace}}/source
           python main.py
