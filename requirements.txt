@@ -42,7 +42,7 @@ lightgbm==3.3.2
 lxml==4.9.1
 Mako==1.2.2
 MarkupSafe==2.1.1
-matplotlib==3.5.3
+matplotlib==3.6.0
 matplotlib-inline==0.1.6
 mistune==2.0.4
 nbclient==0.6.8
