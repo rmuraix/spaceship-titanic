@@ -87,7 +87,7 @@ sklearn==0.0
 soupsieve==2.3.2.post1
 SQLAlchemy==1.4.41
 stack-data==0.5.1
-stevedore==4.0.0
+stevedore==4.0.1
 terminado==0.16.0
 threadpoolctl==3.1.0
 tinycss2==1.1.1
