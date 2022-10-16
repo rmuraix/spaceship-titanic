@@ -85,7 +85,7 @@ Send2Trash==1.8.0
 six==1.16.0
 sklearn==0.0
 soupsieve==2.3.2.post1
-SQLAlchemy==1.4.41
+SQLAlchemy==1.4.42
 stack-data==0.5.1
 stevedore==4.0.1
 terminado==0.16.0
