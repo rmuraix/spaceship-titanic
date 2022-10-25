@@ -11,7 +11,7 @@ cffi==1.15.1
 cliff==4.0.0
 cmaes==0.8.2
 cmd2==2.4.2
-colorama==0.4.5
+colorama==0.4.6
 colorlog==6.7.0
 cycler==0.11.0
 debugpy==1.6.3
