@@ -140,7 +140,6 @@ cv = 5
 
 
 def objective(trial):
-
     param_grid_rfc = {
         "max_depth": trial.suggest_int("max_depth", 5, 15),
         "min_samples_leaf": trial.suggest_int("min_samples_leaf", 1, 5),
@@ -164,10 +163,11 @@ study.optimize(objective, n_trials=100)
 print(study.best_params)
 print(study.best_value)
 rfc_best_param = study.best_params
+
+
 # %%
 # XGBoost with optuna
 def objective(trial):
-
     param_grid_xgb = {
         "min_child_weight": trial.suggest_int("min_child_weight", 1, 5),
         "gamma": trial.suggest_discrete_uniform("gamma", 0.1, 1.0, 0.1),
@@ -193,10 +193,11 @@ study.optimize(objective, n_trials=100)
 print(study.best_params)
 print(study.best_value)
 xgb_best_param = study.best_params
+
+
 # %%
 # LightGBM with optuna
 def objective(trial):
-
     param_grid_lgb = {
         "num_leaves": trial.suggest_int("num_leaves", 3, 10),
         "learning_rate": trial.suggest_loguniform("learning_rate", 1e-8, 1.0),
@@ -223,7 +224,6 @@ lgb_best_param = study.best_params
 
 
 def objective(trial):
-
     param_grid_lr = {"C": trial.suggest_int("C", 1, 100), "random_state": 0}
 
     model = LogisticRegression(**param_grid_lr)
@@ -245,7 +245,6 @@ lr_best_param = study.best_params
 
 
 def objective(trial):
-
     param_grid_svc = {
         "C": trial.suggest_int("C", 50, 200),
         "gamma": trial.suggest_loguniform("gamma", 1e-4, 1.0),
