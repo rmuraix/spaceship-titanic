@@ -30,6 +30,7 @@ def fill_missing_values(
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Fill missing values in both train and test datasets.
+    Uses training data statistics to fill both train and test to prevent data leakage.
 
     Args:
         df: Training DataFrame
@@ -53,21 +54,23 @@ def fill_missing_values(
     ]
     median_columns = ["Age"]
 
-    # Fill mode columns
+    # Fill mode columns using training data statistics
     for col in mode_columns:
         if col in df.columns:
             fill_value = df[col].mode()[0]
             df[col] = df[col].fillna(fill_value).infer_objects(copy=False)
-        if col in test_df.columns:
-            fill_value = test_df[col].mode()[0]
-            test_df[col] = test_df[col].fillna(fill_value).infer_objects(copy=False)
+            # Use training data statistics to fill test data
+            if col in test_df.columns:
+                test_df[col] = test_df[col].fillna(fill_value).infer_objects(copy=False)
 
-    # Fill median columns
+    # Fill median columns using training data statistics
     for col in median_columns:
         if col in df.columns:
-            df[col] = df[col].fillna(df[col].median())
-        if col in test_df.columns:
-            test_df[col] = test_df[col].fillna(test_df[col].median())
+            fill_value = df[col].median()
+            df[col] = df[col].fillna(fill_value)
+            # Use training data statistics to fill test data
+            if col in test_df.columns:
+                test_df[col] = test_df[col].fillna(fill_value)
 
     return df, test_df
 
@@ -85,16 +88,18 @@ def engineer_cabin_features(
     Returns:
         Tuple of (processed_train_df, processed_test_df)
     """
-    # Process training data
-    df["deck"] = df["Cabin"].str.split("/", expand=True)[0]
-    df["num"] = df["Cabin"].str.split("/", expand=True)[1].astype("float")
-    df["side"] = df["Cabin"].str.split("/", expand=True)[2]
+    # Process training data - split once and extract features
+    cabin_split = df["Cabin"].str.split("/", expand=True)
+    df["deck"] = cabin_split[0]
+    df["num"] = cabin_split[1].astype("float")
+    df["side"] = cabin_split[2]
     df = df.drop("Cabin", axis=1)
 
-    # Process test data
-    test_df["deck"] = test_df["Cabin"].str.split("/", expand=True)[0]
-    test_df["num"] = test_df["Cabin"].str.split("/", expand=True)[1].astype("float")
-    test_df["side"] = test_df["Cabin"].str.split("/", expand=True)[2]
+    # Process test data - split once and extract features
+    cabin_split = test_df["Cabin"].str.split("/", expand=True)
+    test_df["deck"] = cabin_split[0]
+    test_df["num"] = cabin_split[1].astype("float")
+    test_df["side"] = cabin_split[2]
     test_df = test_df.drop("Cabin", axis=1)
 
     return df, test_df

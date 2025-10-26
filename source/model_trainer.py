@@ -13,10 +13,7 @@ from lightgbm import LGBMClassifier
 import pandas as pd
 import logging
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# Get logger for this module
 logger = logging.getLogger(__name__)
 
 
