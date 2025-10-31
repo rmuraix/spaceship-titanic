@@ -3,15 +3,16 @@ Model training module for Spaceship Titanic project.
 Handles model initialization, hyperparameter optimization with Optuna, and training.
 """
 
+import logging
+
 import optuna
+import pandas as pd
+from lightgbm import LGBMClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.svm import SVC
-from sklearn.model_selection import cross_validate, StratifiedKFold
 from xgboost import XGBClassifier
-from lightgbm import LGBMClassifier
-import pandas as pd
-import logging
 
 # Get logger for this module
 logger = logging.getLogger(__name__)

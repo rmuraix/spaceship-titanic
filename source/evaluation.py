@@ -3,12 +3,12 @@ Evaluation module for Spaceship Titanic project.
 Handles model evaluation, prediction, and submission file generation.
 """
 
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import cross_validate, train_test_split
-from sklearn.ensemble import VotingClassifier
-from pathlib import Path
 import logging
+from pathlib import Path
+
+import pandas as pd
+from sklearn.ensemble import VotingClassifier
+from sklearn.model_selection import cross_validate, train_test_split
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +93,7 @@ def evaluate_voting_classifier(
     """
     from sklearn.model_selection import StratifiedKFold
 
-    estimators = [(name, model) for name, model in models.items()]
+    estimators = list(models.items())
     voting = VotingClassifier(estimators)
 
     kf = StratifiedKFold(n_splits=cv_splits, shuffle=True, random_state=0)

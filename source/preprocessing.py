@@ -129,10 +129,12 @@ def encode_categorical_features(
 
     # Concatenate train and test to ensure consistent encoding
     combined = pd.concat([df, test_df], axis=0, ignore_index=True)
-    combined_encoded = pd.get_dummies(combined, columns=categorical_columns, sparse=True)
+    combined_encoded = pd.get_dummies(
+        combined, columns=categorical_columns, sparse=True
+    )
     # Split back into train and test
-    df_encoded = combined_encoded.iloc[:len(df)].copy()
-    test_df_encoded = combined_encoded.iloc[len(df):].copy()
+    df_encoded = combined_encoded.iloc[: len(df)].copy()
+    test_df_encoded = combined_encoded.iloc[len(df) :].copy()
 
     return df_encoded, test_df_encoded
 
