@@ -3,8 +3,9 @@ Data loading module for Spaceship Titanic project.
 Handles loading train and test data from CSV files.
 """
 
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 
 def load_data(data_dir: str = "../data") -> tuple[pd.DataFrame, pd.DataFrame]:

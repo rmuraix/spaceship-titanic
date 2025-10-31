@@ -16,18 +16,37 @@ My solution for [spaceship-titanic competition](https://www.kaggle.com/competiti
 ![score](https://user-images.githubusercontent.com/35632215/187970779-96661d09-1618-44af-838a-ac9e239a39ac.png)
 ## Download/Usage
 1. Clone the repository
-2. Install dependencies:
+2. Install [uv](https://docs.astral.sh/uv/) (if not already installed):
    ```bash
-   pip install -r requirements.txt
+   curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
-3. Run the pipeline:
+3. Install dependencies:
+   ```bash
+   uv sync
+   ```
+4. Run the pipeline:
    ```bash
    cd source
-   python main.py
+   uv run python main.py
    ```
-4. Find submission files in `submissions/` directory
+5. Find submission files in `submissions/` directory
 
 For more details on the code structure, see [source/README.md](source/README.md).
+
+## Development
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management and [ruff](https://docs.astral.sh/ruff/) for linting and formatting.
+
+### Linting and Formatting
+```bash
+# Check code style
+uv run ruff check source/
+
+# Fix linting issues automatically
+uv run ruff check --fix source/
+
+# Format code
+uv run ruff format source/
+```
 
 ## Code Structure
 The codebase has been refactored into modular components:
