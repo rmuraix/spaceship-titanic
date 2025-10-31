@@ -237,7 +237,7 @@ wheels = [
 
 [[package]]
 name = "optuna"
-version = "3.6.1"
+version = "3.6.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "alembic" },
@@ -248,9 +248,9 @@ dependencies = [
     { name = "sqlalchemy" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/10/5e37d49c98d5aee9f4eb5eb0e0e24a8c6846dccb45586626127a0c157a85/optuna-3.6.1.tar.gz", hash = "sha256:146e530b57b4b9afd7526b3e642fbe65491f7e292b405913355f8e438e361ecf", size = 292748, upload-time = "2024-04-01T06:04:18.951Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9b/80/8fda921f9336667e08761b23414632c4fdfe615982630a2678bc2c51b5e3/optuna-3.6.2.tar.gz", hash = "sha256:794d6ae9554f0b507760ea5c8b7e889a5e75699baba5a0001f78df3be175faf8", size = 292859, upload-time = "2025-01-27T07:14:20.383Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/da/68883911855d8b4d521f9a370e4e6aab8232b91c1d8d5a8348c4680c6642/optuna-3.6.1-py3-none-any.whl", hash = "sha256:b32e0490bd6552790b70ec94de77dd2855057c9e229cd9f4da48fe8a31c7f1cc", size = 380102, upload-time = "2024-04-01T06:04:15.923Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/9e/f74ceef93fa8026dc423a290244eed610d4fad77a077d88cc0913a678133/optuna-3.6.2-py3-none-any.whl", hash = "sha256:052dafa62964d0c700098275f449c39692aa6b97c4c15509163c5bb15ed852fa", size = 380115, upload-time = "2025-01-27T07:14:18.908Z" },
 ]
 
 [[package]]
@@ -507,7 +507,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "lightgbm", specifier = "==3.3.5" },
-    { name = "optuna", specifier = "==3.6.1" },
+    { name = "optuna", specifier = "==3.6.2" },
     { name = "pandas", specifier = "==2.2.3" },
     { name = "scikit-learn", specifier = "==1.6.1" },
     { name = "xgboost", specifier = "==1.7.6" },
