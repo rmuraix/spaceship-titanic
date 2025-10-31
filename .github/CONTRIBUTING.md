@@ -6,11 +6,19 @@ To get an overview of the project, read the [README](../README.md).
 If you find a problem, first check to see if similar problems have already been reported. If it has not been reported, please report it on the issue page.  
 However, **DO NOT** create an issue if it is a vulnerability report. How to report vulnerabilities: [Security Vulnerabilities](https://github.com/rmuraix/.github/blob/main/.github/SECURITY.md)  
 ## Make Changes
-- install dependencies
+- Install [uv](https://docs.astral.sh/uv/) if not already installed:
 ```shell
-pip install -r requirements.txt
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+- Install dependencies:
+```shell
+uv sync
 ```  
-We use [Black](https://github.com/psf/black) to comply with python coding conventions (PEP). However, you don't need to worry about this when working with it. The bot will fix it on Pull Request.  
+We use [ruff](https://docs.astral.sh/ruff/) for linting and formatting to comply with Python coding conventions. Before submitting a PR, please run:
+```shell
+uv run ruff check --fix source/
+uv run ruff format source/
+```
 Once your changes are ready, don't forget to self-review to speed up the review process!  
 ## Submitting a Pull Request
 Pull requests are great. Here's a quick guide:
